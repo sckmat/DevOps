@@ -1,0 +1,31 @@
+services:
+
+  db:
+    image: postgres:17
+    container_name: postgres_yegorov
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: yegorov
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - backend_net
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx_yegorov
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - backend_net
+
+networks:
+  backend_net:
+    driver: bridge
